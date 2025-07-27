@@ -13,7 +13,8 @@ def post_teams_message(params):
         try:
             for erro in mensagem_erro:
                 # Obtém o webhook de teste das variáveis de ambiente
-                webhook = os.getenv('TEMAS_WEBHOOK_LOG')
+                #webhook = os.getenv('TEMAS_WEBHOOK_LOG')
+                webhook = "https://prod-92.westus.logic.azure.com:443/workflows/eb5d6dde580c419296c25c208d949056/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=NMt883Vwgwa-BYWUcFSPZX1nwb1qrZwjPSSz5RS7r48"
 
                 # Cria o corpo da mensagem com o texto recebido
                 body = {

@@ -1,6 +1,7 @@
 import os              # Para manipulação de arquivos e diretórios
 import time            # Para medir tempo de execução
-from models._organizar_arquivos import organizar_arquivos
+#from models._organizar_arquivos import organizar_arquivos
+from core.index import organizar_arquivos
 from utils.postTeams import post_teams_message
 
 

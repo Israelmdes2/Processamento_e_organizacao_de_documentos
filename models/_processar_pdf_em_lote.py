@@ -9,7 +9,7 @@ def processar_pdf_em_lote(arquivos_pdf, chassis_data):
     # Função interna que verifica se um chassi está no texto de um PDF
     def verificar_pdf(caminho_pdf):
         texto = extrair_texto_do_pdf(caminho_pdf)
-        chassi_encontrado = {c for c in chassis_set if c in texto} #set comprehension (compreensão de conjunto)
+        chassi_encontrado = {c for c in chassis_set if c in texto} #set comprehension (compreensão de conjunto) Verifica se um chassi está no texto
         return caminho_pdf, chassi_encontrado
 
     # Executa a verificação em paralelo usando threads

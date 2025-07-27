@@ -15,10 +15,12 @@ def extrair_texto_do_pdf(caminho_pdf):
     try:
         # Abre o PDF
         with fitz.open(caminho_pdf) as pdf:
+
             # Percorre todas as páginas
             for pagina in pdf:
                 #print(pagina.get_text())
                 texto_completo += pagina.get_text() + "\n"
+                #print(texto_completo)
         # Armazena no cache
         cache_pdf_textos[caminho_pdf] = texto_completo
     except Exception as e:

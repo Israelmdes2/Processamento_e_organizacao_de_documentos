@@ -5,6 +5,8 @@ import re              # Para expressões regulares (não está sendo usada aqui
 import json            # Para salvar dados em formato JSON
 from models._extrair_dados_do_txt import extrair_dados_do_txt
 from models._processar_pdf_em_lote import processar_pdf_em_lote
+from models._validar_texto import is_texto_codificado
+from models._extrair_texto_do_pdf import extrair_texto_do_pdf
 
 # Função principal para organizar os arquivos
 def organizar_arquivos(diretorio_base, mensagem_erro):
@@ -31,7 +33,8 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
 
     if arquivos_para_remover:
         for arquivo in arquivos_para_remover:
-            print(f'⚠️Arquivos que não serão processados: {os.path.basename(arquivo)}')
+            print(f'⚠️Arquivo não será processados com extesão incompatível: {os.path.basename(arquivo)}')
+            mensagem_erro.append(f'Arquivo não será processados com extesão incompatível: <b>{os.path.basename(arquivo)}</b>')
             os.remove(arquivo)
             print(f'❗Arquivo removido com sucesso: {os.path.basename(arquivo)}\n')
 
@@ -60,7 +63,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             if item['CHASSI'] == "":
                 print(f'Sem chassi no .txt: {nome_txt} NOTIFICAR IC')
                 #add mensagem na lista
-                mensagem_erro.append(f'Sem chassi no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem chassi no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -68,7 +71,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['REMARCACAO'] == "":
                 print(f'Sem remarcação no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem remarcação no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem remarcação no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -76,7 +79,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['ANO_FABRICACAO'] == "":
                 print(f'Sem ano de fabricação no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem ano de fabricação no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem ano de fabricação no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -84,7 +87,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['ANO_MODELO'] == "":
                 print(f'Sem ano de modelo no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem ano de modelo no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem ano de modelo no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -92,7 +95,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['NUMERO_OPERACAO'] == "":
                 print(f'Sem número da operação no .txt: {nome_txt} NOTIFICAR IC')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem número da operação no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem número da operação no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -100,7 +103,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['DATA_OPERACAO'] == "":
                 print(f'Sem data da operação no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem data da operação no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem data da operação no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -108,7 +111,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['TIPO_GRAVAME'] == "":
                 print(f'Sem tipo de gravame no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem tipo de gravame no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem tipo de gravame no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -116,7 +119,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['QUANTIDADE_MESES'] == "":
                 print(f'Sem quantidade de meses no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem quantidade de meses no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem quantidade de meses no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -124,7 +127,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['TAXA_JUROS_MES'] == "":
                 print(f'Sem taxa de juros no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem taxa de juros no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem taxa de juros no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -132,7 +135,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['TAXA_JUROS_ANO'] == "":
                 print(f'Sem taxa de juros no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem taxa de juros no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem taxa de juros no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -140,7 +143,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['VALOR_TAXA_CONTRATO'] == "":
                 print(f'Sem valor da taxa do contrato no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem valor da taxa do contrato no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem valor da taxa do contrato no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -148,7 +151,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['VALOR_IOF'] == "":
                 print(f'Sem valor do IOF no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem valor do IOF no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem valor do IOF no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -156,7 +159,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['INDICATIVO_MULTA'] == "":
                 print(f'Sem indicativo de multa no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem indicativo de multa no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem indicativo de multa no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -164,7 +167,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['INDICATIVO_MORA'] == "":
                 print(f'Sem indicativo de mora no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem indicativo de mora no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem indicativo de mora no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -172,7 +175,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['VALOR_PRINCIPAL_OPERACAO'] == "":
                 print(f'Sem valor principal da operação no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem valor principal da operação no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem valor principal da operação no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -180,7 +183,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['VALOR_PARCELA'] == "":
                 print(f'Sem valor da parcela no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem valor da parcela no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem valor da parcela no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -188,7 +191,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['VENCIMENTO_PRIMEIRA_PARCELA'] == "":
                 print(f'Sem vencimento da primeira parcela no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem vencimento da primeira parcela no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem vencimento da primeira parcela no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -196,7 +199,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['VENCIMENTO_ULTIMA_PARCELA'] == "":
                 print(f'Sem vencimento da ultima parcela no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem vencimento da ultima parcela no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem vencimento da ultima parcela no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -204,7 +207,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['CIDADE_LIBERACAO_OPERACAO'] == "":
                 print(f'Sem cidade de liberação da operação no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem cidade de liberação da operação no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem cidade de liberação da operação no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -212,14 +215,14 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['UF_LIBERACAO_OPERACAO'] == "":
                 print(f'Sem UF de liberação da operação no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem UF de liberação da operação no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem UF de liberação da operação no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
             elif item['DATA_LIBERACAO_OPERACAO'] == "":
                 print(f'Sem data de liberação da operação no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem data de liberação da operação no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem data de liberação da operação no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -227,7 +230,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['INDICES_UTILIZADOS'] == "":
                 print(f'Sem índices utilizados no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem índices utilizados no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem índices utilizados no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -235,7 +238,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['MULTA'] == "":
                 print(f'Sem multa no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem multa no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem multa no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -243,7 +246,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['JUROS_MORA'] == "":
                 print(f'Sem juros de mora no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem juros de mora no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem juros de mora no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -251,7 +254,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
             elif item['CPF_CNPJ_RECEBEDOR'] == "":
                 print(f'Sem CPF/CNPJ do recebedor no .txt: {nome_txt}')
                 # add mensagem na lista
-                mensagem_erro.append(f'Sem CPF/CNPJ do recebedor no .txt: {nome_txt}')
+                mensagem_erro.append(f'Sem CPF/CNPJ do recebedor no .txt: {nome_txt}. O .txt foi movido: <b>{nome_txt}</b>')
                 # move o .txt pasta Lixo
                 shutil.move(caminho_txt, pasta_lixo)
                 sair = True
@@ -291,7 +294,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
                 if tamanho_arquivo > 10:
                     print(f'⚠️O PDF "{nome_pdf}" tem mais de 10MB. NOTIFICAR IC 😱 *****NOTIFICAR IC*****')
                     # add mensagem na lista
-                    mensagem_erro.append(f'O PDF "{nome_pdf}" tem mais de 10MB.')
+                    mensagem_erro.append(f'O PDF "{nome_pdf}" tem mais de 10MB. O .txt foi movido: <b>{nome_txt}</b>.')
                     print(f'Movendo o .txt para a pasta "Lixo"')
                     shutil.move(caminho_txt, pasta_lixo)  # move o .txt pasta Lixo
                     print(f"❗Txt com Via Negociável maior que 10MB movido para a pasta Lixo: {nome_txt}")
@@ -312,7 +315,7 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
         if not via_negociavel_encontrada:
             print(f'⚠️Via Negociável não encontrada pelo número da operação {op_num}. NOTIFICAR IC 😱 *****NOTIFICAR IC*****')
             # add mensagem na lista
-            mensagem_erro.append(f'Via Negociável não encontrada pelo número da operação {op_num}.')
+            mensagem_erro.append(f'Via Negociável não encontrada pelo número da operação {op_num}. O .txt foi movido: <b>{nome_txt}</b>.')
             #Remover o .txt sem a Via Negociável da lista de arquivos para mover
             arquivos_para_mover.remove(caminho_txt)
             print(f'Movendo o .txt para a pasta "Lixo"')
@@ -323,31 +326,49 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
 
         print(f'Vai procurar os chassis...')
         # Procura os chassis dentro dos PDFs
-        #resultados_pdf = processar_pdf_em_lote(arquivos_pdf, dados_chassis)
         resultados_pdf = processar_pdf_em_lote(arquivos_pdf_restantes_nf, dados_chassis)
 
         chassis_encontrados = set()
-        #Verifica se o chassi foi encontrado e em qual arquivo .pdf
+        pdf_com_erro_extracao = False  # Flag para controlar erro de extração
+
+        # Verifica se o chassi foi encontrado e em qual arquivo .pdf
         for caminho_pdf, chassis in resultados_pdf:
+            # --- NOVA VALIDAÇÃO DE TEXTO ---
+            texto_extraido = extrair_texto_do_pdf(caminho_pdf)
+            if is_texto_codificado(texto_extraido):
+                nome_pdf_erro = os.path.basename(caminho_pdf)
+                print(
+                    f'  ⚠️ A extração de texto do PDF "{nome_pdf_erro}" falhou (texto codificado). NOTIFICAR IC 😱 *****NOTIFICAR IC*****')
+                mensagem_erro.append(f'A extração de texto do PDF "{nome_pdf_erro}" falhou (texto codificado). O .txt foi movido: <b>{nome_txt}</b>.')
+                pdf_com_erro_extracao = True
+                #remove de resultados_pdf
+                arquivos_pdf.remove(caminho_pdf)
+                break  # Interrompe a verificação dos outros PDFs para esta operação
+
             if chassis:
                 arquivos_para_mover.add(caminho_pdf)
                 chassis_encontrados.update(chassis)
                 print(f"  -> Chassis {list(chassis)} em {os.path.basename(caminho_pdf)}")
 
                 # Verifica se o .pdf mais de 10MB
-                tamanho_arquivo = os.path.getsize(caminho_pdf) / (1024 * 1024)  # Converte bytes para MB
+                tamanho_arquivo = os.path.getsize(caminho_pdf) / (1024 * 1024)
                 if tamanho_arquivo > 10:
-                    print(f'⚠️O .pdf "{os.path.basename(caminho_pdf)}" tem mais de 10MB. NOTIFICAR IC 😱 *****NOTIFICAR IC*****')
-                    # add mensagem na lista
-                    mensagem_erro.append(f'O .pdf "{os.path.basename(caminho_pdf)}" tem mais de 10MB.')
+                    print(
+                        f'⚠️O .pdf "{os.path.basename(caminho_pdf)}" tem mais de 10MB. NOTIFICAR IC 😱 *****NOTIFICAR IC*****')
+                    mensagem_erro.append(f'O .pdf "{os.path.basename(caminho_pdf)}" tem mais de 10MB. O .txt foi movido: <b>{nome_txt}</b>.')
                     print(f'Movendo o .txt para a pasta "Lixo"')
-                    shutil.move(caminho_txt, pasta_lixo)  # move o .txt pasta Lixo
+                    shutil.move(caminho_txt, pasta_lixo)
                     print(f"❗Txt com NF maior que 10MB movido para a pasta Lixo: {nome_txt}")
                     sair = True
                     break
-            else:
-                print(f'  -> Chassis nao encontrado em {os.path.basename(caminho_pdf)}')
         if sair:
+            continue
+
+        # Se um PDF falhou na extração, move o .txt e continua para a próxima operação
+        if pdf_com_erro_extracao:
+            print(f'Movendo o .txt para a pasta "Lixo" devido à falha na extração do PDF.')
+            shutil.move(caminho_txt, pasta_lixo)
+            print(f'❗Txt movido para a pasta Lixo: {nome_txt}')
             continue
 
         #print(chassis_encontrados)
@@ -357,11 +378,11 @@ def organizar_arquivos(diretorio_base, mensagem_erro):
         if faltando:
             print(f'  ⚠️Chassis {faltando} do .txt {nome_txt} não encontrados nos .pdf🤦‍♀️*****NOTIFICAR IC*****')
             # add mensagem na lista
-            mensagem_erro.append(f'Chassis {faltando} do .txt {nome_txt} não encontrados nos .pdf')
+            mensagem_erro.append(f'Chassi {faltando} do .txt {nome_txt} não encontrados nos .pdf. O .txt foi movido: <b>{nome_txt}</b>.')
             print(f'Movendo o .txt para a pasta "Lixo"')
             # move o .txt pasta Lixo
             shutil.move(caminho_txt, pasta_lixo)
-            print(f'❗Txt movido para a pasta Lixo: {nome_txt}')
+            print(f'❗Txt sem os chassis movido para a pasta Lixo: {nome_txt}')
             continue
 
         # Se tiver mais de um arquivo relacionado, move para uma nova pasta
